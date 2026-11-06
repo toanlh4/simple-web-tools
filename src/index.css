@@ -1,0 +1,63 @@
+@import 'tailwindcss';
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  @apply bg-white text-gray-900 antialiased dark:bg-gray-950 dark:text-gray-100;
+  font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+}
+
+.heap-viz {
+  --heap-eden: #2a78d6;
+  --heap-from: #eb6834;
+  --heap-to: #1baf7a;
+  --heap-tenured: #eda100;
+  --heap-on-tenured: #0b0b0b;
+  --heap-metaspace: #e87ba4;
+  --heap-class: #008300;
+  --heap-uncommitted: #e5e7eb;
+}
+
+.dark .heap-viz {
+  --heap-eden: #3987e5;
+  --heap-from: #d95926;
+  --heap-to: #199e70;
+  --heap-tenured: #c98500;
+  --heap-on-tenured: #ffffff;
+  --heap-metaspace: #d55181;
+  --heap-class: #008300;
+  --heap-uncommitted: #1f2937;
+}
+
+@layer components {
+  .toolbar-btn {
+    @apply inline-flex h-7 min-w-7 items-center justify-center gap-1 rounded-md px-1.5 text-gray-600 hover:bg-gray-100 hover:text-gray-900 disabled:pointer-events-none disabled:opacity-40 dark:text-gray-300 dark:hover:bg-gray-800 dark:hover:text-gray-100;
+  }
+  .toolbar-btn-active {
+    @apply bg-blue-50 text-blue-700 dark:bg-blue-950 dark:text-blue-200;
+  }
+  .toolbar-sep {
+    @apply mx-0.5 h-5 w-px bg-gray-200 dark:bg-gray-700;
+  }
+  .btn-primary {
+    @apply inline-flex items-center gap-1.5 rounded-md bg-blue-600 px-3 py-1 text-xs font-medium text-white hover:bg-blue-700 disabled:opacity-50;
+  }
+  .btn-secondary {
+    @apply inline-flex items-center gap-1.5 rounded-md border border-gray-200 bg-white px-3 py-1 text-xs font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200 dark:hover:bg-gray-800;
+  }
+  .input {
+    @apply h-7 rounded-md border border-gray-200 bg-white px-2 font-mono text-xs text-gray-900 outline-none placeholder:text-gray-400 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100;
+  }
+  .input-error {
+    @apply border-red-500 focus:border-red-500 focus:ring-red-500;
+  }
+  .textarea {
+    @apply min-h-0 w-full flex-1 resize-none rounded-md border border-gray-200 bg-white p-2 font-mono text-xs text-gray-900 outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100;
+  }
+}
