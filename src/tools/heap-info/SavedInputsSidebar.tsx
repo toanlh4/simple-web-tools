@@ -1,5 +1,6 @@
 import { useMemo, useRef, useState, type PointerEvent } from 'react';
 import { PanelRightClose, Trash2, Upload, X } from 'lucide-react';
+import { formatDateTime } from '../../utils/formatDateTime';
 import { formatSize, heapUsed, parseHeapInfo } from './parse';
 import { SIDEBAR_MIN_WIDTH, useSavedInputsStore, type SavedInput } from './useSavedInputsStore';
 
@@ -105,7 +106,7 @@ export function SavedInputsSidebar({ onImport, onMessage }: SavedInputsSidebarPr
                   {saved.name}
                 </div>
                 <div className="mt-0.5 flex flex-wrap gap-x-2 text-[11px] text-gray-500 dark:text-gray-400">
-                  <span>{new Date(saved.savedAt).toLocaleString()}</span>
+                  <span>{formatDateTime(saved.savedAt)}</span>
                   <span>·</span>
                   <span>{summarize(saved.input)}</span>
                 </div>

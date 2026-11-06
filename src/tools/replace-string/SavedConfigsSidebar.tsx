@@ -1,5 +1,6 @@
 import { useMemo, useRef, useState, type PointerEvent } from 'react';
 import { PanelRightClose, Trash2, Upload, X } from 'lucide-react';
+import { formatDateTime } from '../../utils/formatDateTime';
 import { SIDEBAR_MIN_WIDTH, useSavedConfigsStore, type SavedConfig } from './useSavedConfigsStore';
 
 const SIDEBAR_MAX_WIDTH = 640;
@@ -102,7 +103,7 @@ export function SavedConfigsSidebar({ onImport, onMessage }: SavedConfigsSidebar
                   {config.name}
                 </div>
                 <div className="mt-0.5 flex flex-wrap gap-x-2 text-[11px] text-gray-500 dark:text-gray-400">
-                  <span>{new Date(config.savedAt).toLocaleString()}</span>
+                  <span>{formatDateTime(config.savedAt)}</span>
                   <span>·</span>
                   <span>
                     {config.steps.length} {config.steps.length === 1 ? 'step' : 'steps'}
