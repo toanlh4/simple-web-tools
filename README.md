@@ -9,6 +9,7 @@ Tech stack: React + TypeScript + Vite + Tailwind CSS (same setup as `sql-analyze
 | Tool | Description |
 | --- | --- |
 | Replace String | Apply a chain of find/replace steps to a text. Each step is plain text or a regex (with `g i m s u y` flags), can be disabled, reordered by drag and drop. The step list can be exported to / imported from a local JSON config file, or saved by name in browser storage and managed from the "Saved configs" sidebar. |
+| Local Media Viewer | Browse a local folder of photos and videos (`YYYY/YYYY-MM/DD`) on one timeline with a month list and a full-screen viewer. Files are only read, never uploaded. Chrome/Edge remember the folder; other browsers ask for it on each visit. |
 
 ## Requirements
 
@@ -25,6 +26,9 @@ npm run dev
 
 # Production build -> dist/ (serve it with any static web server)
 npm run build
+
+# Run the unit tests
+npm test
 
 # Preview the production build locally
 npm run preview

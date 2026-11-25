@@ -1,6 +1,7 @@
 import type { ReactElement } from 'react';
-import { MemoryStick, Replace, type LucideIcon } from 'lucide-react';
+import { Images, MemoryStick, Replace, type LucideIcon } from 'lucide-react';
 import { HeapInfoPage } from './heap-info/HeapInfoPage';
+import { LocalMediaViewerPage } from './local-media-viewer/LocalMediaViewerPage';
 import { ReplaceStringPage } from './replace-string/ReplaceStringPage';
 
 export interface ToolDef {
@@ -29,5 +30,13 @@ export const tools: ToolDef[] = [
     icon: MemoryStick,
     path: '/heap-info',
     element: <HeapInfoPage />,
+  },
+  {
+    id: 'local-media-viewer',
+    name: 'Local Media Viewer',
+    description: 'Browse a local folder of photos and videos, organized by year, month and day, on one timeline. Files stay on your computer.',
+    icon: Images,
+    path: '/local-media-viewer',
+    element: <LocalMediaViewerPage />,
   },
 ];
