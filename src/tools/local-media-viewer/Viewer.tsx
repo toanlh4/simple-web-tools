@@ -1,7 +1,8 @@
-import { useEffect, useRef, useState, type KeyboardEvent, type TouchEvent } from 'react';
+import { useCallback, useEffect, useRef, useState, type TouchEvent } from 'react';
 import { ChevronLeft, ChevronRight, FileWarning, LoaderCircle, Maximize, X } from 'lucide-react';
 import type { MediaItem } from './media';
 import type { MediaSource } from './source';
+import { ZoomableImage, type ZoomHandle } from './ZoomableImage';
 
 const SWIPE_DISTANCE = 50;
 /** Height at the bottom of a video where swipes belong to its controls. */
@@ -62,6 +63,11 @@ export function Viewer({ items, source, item, onChange, onClose }: ViewerProps) 
   const frameRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const touchRef = useRef<{ x: number; y: number } | null>(null);
+  const zoomRef = useRef<ZoomHandle>(null);
+  const zoomedRef = useRef(false);
+  const onZoomedChange = useCallback((zoomed: boolean) => {
+    zoomedRef.current = zoomed;
+  }, []);
   const [cache] = useState(() => new UrlCache());
   const [loaded, setLoaded] = useState<Loaded | null>(null);
   const [failure, setFailure] = useState<Failure | null>(null);
@@ -141,7 +147,7 @@ export function Viewer({ items, source, item, onChange, onClose }: ViewerProps) 
   };
 
   // Capture phase, so the arrow keys change the file instead of seeking in a focused video.
-  const onKeyDown = (e: KeyboardEvent) => {
+  const onKeyDown = (e: globalThis.KeyboardEvent) => {
     if (e.ctrlKey || e.altKey || e.metaKey) return;
     switch (e.key) {
       case 'ArrowLeft':
@@ -161,6 +167,16 @@ export function Viewer({ items, source, item, onChange, onClose }: ViewerProps) 
       case 'f':
         toggleFullscreen();
         break;
+      case '+':
+      case '=':
+        zoomRef.current?.zoomIn();
+        break;
+      case '-':
+        zoomRef.current?.zoomOut();
+        break;
+      case '0':
+        zoomRef.current?.reset();
+        break;
       case ' ': {
         const video = videoRef.current;
         if (!video || e.target === video || e.target instanceof HTMLButtonElement) return;
@@ -175,9 +191,20 @@ export function Viewer({ items, source, item, onChange, onClose }: ViewerProps) 
     e.stopPropagation();
   };
 
+  // On the document rather than the dialog: clicking the photo moves focus to the body, outside the dialog.
+  const onKeyDownRef = useRef(onKeyDown);
+  useEffect(() => {
+    onKeyDownRef.current = onKeyDown;
+  });
+  useEffect(() => {
+    const listener = (e: globalThis.KeyboardEvent) => onKeyDownRef.current(e);
+    document.addEventListener('keydown', listener, true);
+    return () => document.removeEventListener('keydown', listener, true);
+  }, []);
   const onTouchStart = (e: TouchEvent) => {
     touchRef.current = null;
-    if (e.touches.length !== 1) return;
+    // While zoomed in, one finger pans the photo instead.
+    if (e.touches.length !== 1 || zoomedRef.current) return;
     const { clientX: x, clientY: y } = e.touches[0];
     const video = videoRef.current;
     if (video && e.target === video && y > video.getBoundingClientRect().bottom - VIDEO_CONTROLS_HEIGHT) return;
@@ -204,7 +231,6 @@ export function Viewer({ items, source, item, onChange, onClose }: ViewerProps) 
         e.preventDefault();
         onClose();
       }}
-      onKeyDownCapture={onKeyDown}
       className="m-0 h-full max-h-none w-full max-w-none border-0 bg-black p-0 text-white"
     >
       <div
@@ -239,7 +265,7 @@ export function Viewer({ items, source, item, onChange, onClose }: ViewerProps) 
               <LoaderCircle className="h-8 w-8 animate-spin text-white/50" />
             </div>
           ) : item.kind === 'photo' ? (
-            <img key={media.url} src={media.url} alt={item.name} draggable={false} onError={onMediaError} className="h-full w-full object-contain" />
+            <ZoomableImage key={media.url} ref={zoomRef} src={media.url} alt={item.name} onError={onMediaError} onZoomedChange={onZoomedChange} />
           ) : (
             <video
               key={media.url}
